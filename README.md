@@ -5,10 +5,15 @@ Next.js 14 frontend for the MarketIQ intelligence platform.
 ## 🚀 Quick Start
 
 ```bash
-cp .env.local.example .env.local
-# Fill in your values
-npm install
-npm run dev
+1. Clone repo
+2. Copy environment file:
+   cp .env.example .env.local
+
+3. Install dependencies:
+   npm install
+
+4. Run:
+   npm run dev
 # → http://localhost:3000
 ```
 
