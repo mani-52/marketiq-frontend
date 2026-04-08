@@ -60,7 +60,7 @@ export function storageRemove(key: string): void {
 }
 
 /**
- * Clear all miq_* keys (used on logout — leaves non-app keys intact).
+ * Clear all miq_* keys (kept for future use if needed).
  */
 export function storageClearApp(): void {
   if (typeof window === 'undefined') return;
@@ -76,7 +76,7 @@ export function storageClearApp(): void {
 
 // ── Schema validators ─────────────────────────────────────────────────────────
 
-import type { StoredAnalysis, AuthUser } from '@/types';
+import type { StoredAnalysis } from '@/types';
 
 /**
  * Validate a StoredAnalysis object has all required fields before rendering.
@@ -95,15 +95,6 @@ export function isValidStoredAnalysis(data: unknown): data is StoredAnalysis {
     Array.isArray(d.sentimentTimeline) &&
     d.summary !== null && typeof d.summary === 'object'
   );
-}
-
-/**
- * Validate a stored user object.
- */
-export function isValidUser(data: unknown): data is AuthUser {
-  if (!data || typeof data !== 'object') return false;
-  const d = data as Record<string, unknown>;
-  return typeof d.email === 'string' && typeof d.id === 'string';
 }
 
 // ── Analysis index management ─────────────────────────────────────────────────
