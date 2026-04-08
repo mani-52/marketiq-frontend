@@ -10,6 +10,7 @@ const typeConfig = {
   risk: { icon: AlertTriangle, label: 'Risk', color: '#ef4444' },
   opportunity: { icon: Lightbulb, label: 'Opportunity', color: '#22c55e' },
   alert: { icon: Bell, label: 'Alert', color: '#f59e0b' },
+  innovation: { icon: Lightbulb, label: 'Innovation', color: '#a855f7' },
 };
 
 export function InsightCard({ insight, index = 0 }: { insight: InsightCardType; index?: number }) {
