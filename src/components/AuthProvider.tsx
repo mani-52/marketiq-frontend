@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { storageGet } from '@/utils/storage';
 
+/* ✅ USER TYPE */
 export interface AuthUser {
   id: string;
   name: string;
@@ -10,34 +11,50 @@ export interface AuthUser {
   picture?: string;
 }
 
+/* ✅ CONTEXT TYPE (STRICT + SAFE) */
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   setUser: (u: AuthUser | null) => void;
-  logout: () => void;   // ✅ MUST EXIST
+  logout: () => void;
 }
 
+/* ✅ DEFAULT CONTEXT (SAFE FALLBACKS) */
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  loading: false,
+  loading: true,
   setUser: () => {},
-  logout: () => {},   // ✅ MUST EXIST
+  logout: () => {},
 });
 
+/* ✅ PROVIDER */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ✅ LOAD USER FROM STORAGE */
   useEffect(() => {
-    const u = storageGet<AuthUser>('miq_user');
-    if (u?.email) setUser(u);
-    setLoading(false);
+    try {
+      const u = storageGet<AuthUser>('miq_user');
+      if (u?.email) {
+        setUser(u);
+      }
+    } catch (err) {
+      console.error('Auth load error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  /* ✅ LOGOUT FUNCTION */
   const logout = () => {
-    localStorage.removeItem('miq_user');
-    setUser(null);
-    window.location.href = '/login';
+    try {
+      localStorage.removeItem('miq_user');
+      setUser(null);
+      window.location.href = '/login';
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
   };
 
   return (
@@ -47,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+/* ✅ STRICT RETURN TYPE (VERY IMPORTANT) */
+export function useAuth(): AuthContextType {
   return useContext(AuthContext);
 }
