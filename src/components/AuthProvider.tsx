@@ -10,19 +10,18 @@ export interface AuthUser {
   picture?: string;
 }
 
-/* ✅ FIXED TYPE (ADDED logout) */
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   setUser: (u: AuthUser | null) => void;
-  logout: () => void;   // ✅ ADDED
+  logout: () => void; // ✅ IMPORTANT
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: false,
   setUser: () => {},
-  logout: () => {},   // ✅ ADDED DEFAULT
+  logout: () => {}, // ✅ IMPORTANT
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -35,11 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  /* ✅ IMPLEMENT LOGOUT */
   const logout = () => {
     localStorage.removeItem('miq_user');
     setUser(null);
-    window.location.href = '/login'; // redirect after logout
+    window.location.href = '/login';
   };
 
   return (
