@@ -14,14 +14,14 @@ interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   setUser: (u: AuthUser | null) => void;
-  logout: () => void; // ✅ IMPORTANT
+  logout: () => void;   // ✅ MUST EXIST
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: false,
   setUser: () => {},
-  logout: () => {}, // ✅ IMPORTANT
+  logout: () => {},   // ✅ MUST EXIST
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
