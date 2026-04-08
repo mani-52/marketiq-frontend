@@ -1,16 +1,29 @@
 'use client';
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { storageGet } from '@/utils/storage';
 
-export interface AuthUser { id: string; name: string; email: string; picture?: string; }
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string;
+}
 
+/* ✅ FIXED TYPE (ADDED logout) */
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   setUser: (u: AuthUser | null) => void;
+  logout: () => void;   // ✅ ADDED
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: false, setUser: () => {} });
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: false,
+  setUser: () => {},
+  logout: () => {},   // ✅ ADDED DEFAULT
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -22,7 +35,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  return <AuthContext.Provider value={{ user, loading, setUser }}>{children}</AuthContext.Provider>;
+  /* ✅ IMPLEMENT LOGOUT */
+  const logout = () => {
+    localStorage.removeItem('miq_user');
+    setUser(null);
+    window.location.href = '/login'; // redirect after logout
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, setUser, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export function useAuth() { return useContext(AuthContext); }
+export function useAuth() {
+  return useContext(AuthContext);
+}
