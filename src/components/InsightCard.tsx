@@ -1,22 +1,32 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, AlertTriangle, Lightbulb, Bell } from 'lucide-react';
+import {
+  TrendingUp,
+  AlertTriangle,
+  Lightbulb,
+  Bell,
+} from 'lucide-react';
 import { InsightCard as InsightCardType } from '@/types';
 import { formatRelativeTime } from '@/utils/cn';
+import { LucideIcon } from 'lucide-react';
 
-/* ✅ DEFINE STRICT TYPES */
-type InsightType = "trend" | "risk" | "opportunity" | "alert" | "innovation";
+/* ✅ STRICT TYPE */
+type InsightType =
+  | 'trend'
+  | 'risk'
+  | 'opportunity'
+  | 'alert'
+  | 'innovation';
 
-/* ✅ CONFIG WITH STRICT TYPING */
-const typeConfig: Record<
-  InsightType,
-  {
-    icon: any;
-    label: string;
-    color: string;
-  }
-> = {
+/* ✅ TYPE-SAFE CONFIG */
+type ConfigType = {
+  icon: LucideIcon;
+  label: string;
+  color: string;
+};
+
+const typeConfig: Record<InsightType, ConfigType> = {
   trend: {
     icon: TrendingUp,
     label: 'Trend',
@@ -44,6 +54,17 @@ const typeConfig: Record<
   },
 };
 
+/* ✅ TYPE GUARD (BEST PRACTICE) */
+function isInsightType(type: string): type is InsightType {
+  return [
+    'trend',
+    'risk',
+    'opportunity',
+    'alert',
+    'innovation',
+  ].includes(type);
+}
+
 export function InsightCard({
   insight,
   index = 0,
@@ -51,11 +72,10 @@ export function InsightCard({
   insight: InsightCardType;
   index?: number;
 }) {
-  /* ✅ SAFE TYPE HANDLING (NO TS ERRORS EVER) */
-  const safeType: InsightType =
-    ["trend", "risk", "opportunity", "alert", "innovation"].includes(insight.type)
-      ? (insight.type as InsightType)
-      : "alert";
+  /* ✅ SAFE + CLEAN TYPE HANDLING */
+  const safeType: InsightType = isInsightType(insight.type)
+    ? insight.type
+    : 'alert';
 
   const config = typeConfig[safeType];
   const Icon = config.icon;
@@ -73,7 +93,10 @@ export function InsightCard({
           className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
           style={{ backgroundColor: `${config.color}18` }}
         >
-          <Icon className="h-4 w-4" style={{ color: config.color }} />
+          <Icon
+            className="h-4 w-4"
+            style={{ color: config.color }}
+          />
         </div>
 
         <span
