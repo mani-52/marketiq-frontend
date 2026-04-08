@@ -5,7 +5,18 @@ import { TrendingUp, AlertTriangle, Lightbulb, Bell } from 'lucide-react';
 import { InsightCard as InsightCardType } from '@/types';
 import { formatRelativeTime } from '@/utils/cn';
 
-const typeConfig = {
+/* ✅ ADD THIS TYPE */
+type InsightType = "trend" | "risk" | "opportunity" | "alert" | "innovation";
+
+/* ✅ FIXED TYPECONFIG WITH PROPER TYPING */
+const typeConfig: Record<
+  InsightType,
+  {
+    icon: any;
+    label: string;
+    color: string;
+  }
+> = {
   trend: { icon: TrendingUp, label: 'Trend', color: '#6366f1' },
   risk: { icon: AlertTriangle, label: 'Risk', color: '#ef4444' },
   opportunity: { icon: Lightbulb, label: 'Opportunity', color: '#22c55e' },
@@ -14,7 +25,8 @@ const typeConfig = {
 };
 
 export function InsightCard({ insight, index = 0 }: { insight: InsightCardType; index?: number }) {
-  const config = typeConfig[insight.type] ?? typeConfig.alert;
+  /* ✅ FIXED TYPE ERROR HERE */
+  const config = typeConfig[insight.type as InsightType] ?? typeConfig.alert;
   const Icon = config.icon;
 
   return (
@@ -39,20 +51,33 @@ export function InsightCard({ insight, index = 0 }: { insight: InsightCardType; 
         </span>
       </div>
 
-      <h4 className="mb-1.5 text-sm font-semibold text-foreground line-clamp-2">{insight.title}</h4>
-      <p className="mb-3 text-xs leading-relaxed text-muted-foreground line-clamp-3">{insight.description}</p>
+      <h4 className="mb-1.5 text-sm font-semibold text-foreground line-clamp-2">
+        {insight.title}
+      </h4>
+
+      <p className="mb-3 text-xs leading-relaxed text-muted-foreground line-clamp-3">
+        {insight.description}
+      </p>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <div className="h-1 w-16 overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full transition-all"
-              style={{ width: `${insight.confidence}%`, backgroundColor: config.color }}
+              style={{
+                width: `${insight.confidence}%`,
+                backgroundColor: config.color,
+              }}
             />
           </div>
-          <span className="text-xs text-muted-foreground">{insight.confidence}% conf.</span>
+          <span className="text-xs text-muted-foreground">
+            {insight.confidence}% conf.
+          </span>
         </div>
-        <span className="text-xs text-muted-foreground">{formatRelativeTime(insight.createdAt)}</span>
+
+        <span className="text-xs text-muted-foreground">
+          {formatRelativeTime(insight.createdAt)}
+        </span>
       </div>
     </motion.div>
   );
